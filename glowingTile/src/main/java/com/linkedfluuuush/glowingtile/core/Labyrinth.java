@@ -1,0 +1,244 @@
+package core;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+
+import java.io.*;
+import java.util.LinkedList;
+import java.util.Random;
+
+public class Labyrinth {
+    private static final Logger LOGGER = LogManager.getLogger(Labyrinth.class);
+
+    private LinkedList<Tile> tiles;
+
+    public Labyrinth(LinkedList<Tile> tiles) {
+        this.tiles = tiles;
+    }
+
+    public LinkedList<Tile> getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(LinkedList<Tile> tiles) {
+        this.tiles = tiles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Labyrinth)) return false;
+
+        Labyrinth labyrinth = (Labyrinth) o;
+
+        return !(getTiles() != null ? !getTiles().equals(labyrinth.getTiles()) : labyrinth.getTiles() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getTiles() != null ? getTiles().hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Labyrinth{" +
+                "tiles=" + tiles +
+                '}';
+    }
+
+    public boolean useTile(int x, int y){
+        for(Tile t : this.getTiles()){
+            if(t.getX() == x && t.getY() == y){
+                return useTile(t);
+            }
+        }
+
+        return true;
+    }
+
+    public boolean useTile(Tile tile){
+        tile.use();
+        return tile.getEtat().equals(Tile.Etat.CASSE);
+    }
+
+    public static Labyrinth generateLabyrinth(int lvl, int maxWidth, int maxHeight){
+        LOGGER.debug("Generating Labyrinth with params lvl = " + lvl + ", maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
+        if(maxHeight > 0 && maxWidth > 0) {
+            Random r = new Random();
+            Tile tileDepart = new Tile(r.nextInt(maxWidth), r.nextInt(maxHeight), Tile.Type.DEPART);
+            LinkedList<Tile> tiles = new LinkedList<Tile>();
+            tiles.add(tileDepart);
+
+            LinkedList<Tile> newTiles = generateStep(tiles, lvl, maxWidth, maxHeight);
+
+            while (newTiles == null) {
+                newTiles = generateStep(tiles, lvl, maxWidth, maxHeight);
+            }
+
+            newTiles.getLast().setType(Tile.Type.ARRIVEE);
+            LOGGER.debug(newTiles.toString());
+
+
+            return new Labyrinth(newTiles);
+        } else {
+            LOGGER.error("Wrong params for generation ! maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
+            return null;
+        }
+    }
+
+    private static LinkedList<Tile> generateStep(LinkedList<Tile> tiles, int lvl, int maxWidth, int maxHeight){
+        Random r = new Random();
+        LOGGER.debug("Current step : " + tiles.size());
+
+        boolean notValid = true;
+        int stepDirInit = r.nextInt(4) + 1;
+        int stepDir = stepDirInit;
+
+        int nextStepX = tiles.getLast().getX();
+        int nextStepY = tiles.getLast().getY();
+
+        boolean oneStep = false;
+
+        while(notValid){
+            switch(stepDir){
+                case 1:
+                    nextStepX = tiles.getLast().getX() - 1;
+                    nextStepY = tiles.getLast().getY();
+                    break;
+                case 2:
+                    nextStepX = tiles.getLast().getX();
+                    nextStepY = tiles.getLast().getY() - 1;
+                    break;
+                case 3:
+                    nextStepX = tiles.getLast().getX() + 1;
+                    nextStepY = tiles.getLast().getY();
+                    break;
+                case 4:
+                    nextStepX = tiles.getLast().getX();
+                    nextStepY = tiles.getLast().getY() + 1;
+                    break;
+            }
+
+            notValid = false;
+
+            if(nextStepX < 0 || nextStepX > maxWidth || nextStepY < 0 || nextStepY > maxHeight){
+                if (stepDir != stepDirInit || !oneStep) {
+                    oneStep = true;
+                    notValid = true;
+                    stepDir = (stepDir % 4) + 1;
+                } else {
+                    if (tiles.size() >= 5 * lvl) {
+                        return tiles;
+                    } else {
+                        return null;
+                    }
+                }
+            } else {
+                for(Tile t : tiles){
+                    if(nextStepX == t.getX() && nextStepY == t.getY()){
+                        if (stepDir != stepDirInit || !oneStep) {
+                            oneStep = true;
+                            notValid = true;
+                            stepDir = (stepDir % 4) + 1;
+                            break;
+                        } else {
+                            if (tiles.size() >= 5 * lvl) {
+                                return tiles;
+                            } else {
+                                return null;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!notValid){
+                tiles.add(new Tile(nextStepX, nextStepY, Tile.Type.NEUTRE));
+
+                LinkedList<Tile> nextTiles;
+
+                nextTiles = generateStep((LinkedList<Tile>) tiles.clone(), lvl, maxWidth, maxHeight);
+
+                if(nextTiles != null){
+                    return nextTiles;
+                } else {
+                    if (stepDir != stepDirInit || !oneStep) {
+                        oneStep = true;
+                        notValid = true;
+                        stepDir = (stepDir % 4) + 1;
+                    } else {
+                        if (tiles.size() >= 5 * lvl) {
+                            return tiles;
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public boolean detectWin(Howdy howdy){
+        for(Tile t : this.getTiles()){
+            if(!t.getEtat().equals(Tile.Etat.USE)){
+                return false;
+            }
+
+            if(t.getType().equals(Tile.Type.ARRIVEE)){
+                if(howdy.getX() != t.getX() || howdy.getY() != t.getY()){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean existsTile(int x, int y) {
+        for(Tile t : this.getTiles()){
+            if(t.getX() == x && t.getY() == y){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isLost() {
+        for(Tile t : this.getTiles()){
+            if(t.getEtat().equals(Tile.Etat.CASSE)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static Labyrinth loadLabyrinth(String lvlName) throws IOException {
+        LinkedList<Tile> tiles = new LinkedList<Tile>();
+
+        File mapSource = new File("GlowingTile/resources/levels/" + lvlName + ".json");
+        BufferedReader br = new BufferedReader(new FileReader(mapSource));
+
+        String jsonMap = "";
+        String line;
+
+        while((line = br.readLine()) != null){
+            jsonMap += line;
+        }
+
+        JSONArray tileArray = new JSONArray(jsonMap);
+
+        for(int i = 0 ; i < tileArray.length() ; i++){
+            tiles.add(new Tile(tileArray.getJSONObject(i).getInt("x"),
+                    tileArray.getJSONObject(i).getInt("y"),
+                    tileArray.getJSONObject(i).getString("t")));
+        }
+
+        return new Labyrinth(tiles);
+    }
+}
