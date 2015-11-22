@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GlowingTile.iml" filepath="$PROJECT_DIR$/GlowingTile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GlowingTileDroid.iml" filepath="$PROJECT_DIR$/GlowingTileDroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/glowingTile/glowingTile.iml" filepath="$PROJECT_DIR$/glowingTile/glowingTile.iml" />
     </modules>
   </component>

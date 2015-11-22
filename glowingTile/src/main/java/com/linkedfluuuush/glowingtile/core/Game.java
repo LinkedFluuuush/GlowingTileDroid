@@ -1,7 +1,8 @@
-package core;
+package com.linkedfluuuush.glowingtile.core;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import android.util.Log;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.Random;
@@ -10,7 +11,7 @@ public class Game {
     private Labyrinth labyrinth;
     private Howdy howdy;
 
-    private static Logger LOGGER = LogManager.getLogger(Game.class);
+    private static String TAG = Game.class.getName();
 
     public Game(Labyrinth labyrinth, Howdy howdy) {
         this.labyrinth = labyrinth;
@@ -23,17 +24,17 @@ public class Game {
     }
 
     public Game initGame(int lvl, int maxWidth, int maxHeight){
-        LOGGER.debug("Generating labyrinth...");
+        Log.d(TAG, "Generating labyrinth...");
         this.setLabyrinth(Labyrinth.generateLabyrinth(lvl, maxWidth, maxHeight));
         this.setHowdy(Howdy.getHowdy());
 
-        LOGGER.debug("Setting Howdy");
+        Log.d(TAG, "Setting Howdy");
         for(Tile t : this.getLabyrinth().getTiles()){
             if(t.getType().equals(Tile.Type.DEPART)){
                 this.getHowdy().setPosition(t.getX(), t.getY());
             }
         }
-        LOGGER.debug("Howdy set to (" + this.getHowdy().getX() + ", " + this.getHowdy().getY() + ")");
+        Log.d(TAG, "Howdy set to (" + this.getHowdy().getX() + ", " + this.getHowdy().getY() + ")");
 
 
         return this;
@@ -41,18 +42,20 @@ public class Game {
 
     public Game initGame(String lvlName){
         try {
-            LOGGER.debug("Loading labyrinth " + lvlName + "...");
+            Log.d(TAG, "Loading labyrinth " + lvlName + "...");
             this.setLabyrinth(Labyrinth.loadLabyrinth(lvlName));
             this.setHowdy(Howdy.getHowdy());
 
-            LOGGER.debug("Setting Howdy");
+            Log.d(TAG, "Setting Howdy");
             for(Tile t : this.getLabyrinth().getTiles()){
                 if(t.getType().equals(Tile.Type.DEPART)){
                     this.getHowdy().setPosition(t.getX(), t.getY());
                 }
             }
-            LOGGER.debug("Howdy set to (" + this.getHowdy().getX() + ", " + this.getHowdy().getY() + ")");
+            Log.d(TAG, "Howdy set to (" + this.getHowdy().getX() + ", " + this.getHowdy().getY() + ")");
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -124,7 +127,7 @@ public class Game {
     }
 
     public void reInitGame() {
-        LOGGER.debug("Re-initiating...");
+        Log.d(TAG, "Re-initiating...");
         for(Tile t : this.getLabyrinth().getTiles()){
             if(t.getType().equals(Tile.Type.DEPART)){
                 this.getHowdy().setPosition(t.getX(), t.getY());

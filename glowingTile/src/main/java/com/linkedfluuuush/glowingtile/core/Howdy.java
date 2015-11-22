@@ -1,4 +1,4 @@
-package core;
+package com.linkedfluuuush.glowingtile.core;
 
 public class Howdy {
     private int x, y;

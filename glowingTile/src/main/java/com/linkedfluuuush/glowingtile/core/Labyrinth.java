@@ -1,15 +1,16 @@
-package core;
+package com.linkedfluuuush.glowingtile.core;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import android.util.Log;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.*;
 import java.util.LinkedList;
 import java.util.Random;
 
 public class Labyrinth {
-    private static final Logger LOGGER = LogManager.getLogger(Labyrinth.class);
+    private static String TAG = Game.class.getName();
 
     private LinkedList<Tile> tiles;
 
@@ -64,7 +65,7 @@ public class Labyrinth {
     }
 
     public static Labyrinth generateLabyrinth(int lvl, int maxWidth, int maxHeight){
-        LOGGER.debug("Generating Labyrinth with params lvl = " + lvl + ", maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
+        Log.d(TAG, "Generating Labyrinth with params lvl = " + lvl + ", maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
         if(maxHeight > 0 && maxWidth > 0) {
             Random r = new Random();
             Tile tileDepart = new Tile(r.nextInt(maxWidth), r.nextInt(maxHeight), Tile.Type.DEPART);
@@ -78,19 +79,19 @@ public class Labyrinth {
             }
 
             newTiles.getLast().setType(Tile.Type.ARRIVEE);
-            LOGGER.debug(newTiles.toString());
+            Log.d(TAG, newTiles.toString());
 
 
             return new Labyrinth(newTiles);
         } else {
-            LOGGER.error("Wrong params for generation ! maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
+            Log.e(TAG, "Wrong params for generation ! maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
             return null;
         }
     }
 
     private static LinkedList<Tile> generateStep(LinkedList<Tile> tiles, int lvl, int maxWidth, int maxHeight){
         Random r = new Random();
-        LOGGER.debug("Current step : " + tiles.size());
+        Log.d(TAG, "Current step : " + tiles.size());
 
         boolean notValid = true;
         int stepDirInit = r.nextInt(4) + 1;
@@ -218,7 +219,7 @@ public class Labyrinth {
         return false;
     }
 
-    public static Labyrinth loadLabyrinth(String lvlName) throws IOException {
+    public static Labyrinth loadLabyrinth(String lvlName) throws IOException, JSONException {
         LinkedList<Tile> tiles = new LinkedList<Tile>();
 
         File mapSource = new File("GlowingTile/resources/levels/" + lvlName + ".json");
