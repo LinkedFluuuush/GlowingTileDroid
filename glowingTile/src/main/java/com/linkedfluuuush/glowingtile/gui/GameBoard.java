@@ -6,11 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.linkedfluuuush.glowingtile.R;
 import com.linkedfluuuush.glowingtile.core.Game;
 import com.linkedfluuuush.glowingtile.core.Tile;
 
@@ -59,7 +61,7 @@ public class GameBoard extends View {
             switch (t.getType()){
                 case DEPART:
                     mBoardPaint.setColor(Color.BLUE);
-                    fileName = "start";
+                    fileName = "tile";
                     break;
                 case ARRIVEE:
                     mBoardPaint.setColor(Color.YELLOW);
@@ -99,7 +101,20 @@ public class GameBoard extends View {
             resizedTileDrawable.draw(canvas);
         }
 
-        mBoardPaint.setColor(Color.RED);
-        canvas.drawRect(new Rect(game.getHowdy().getX() * 40 + 10, game.getHowdy().getY() * 40 + 10, game.getHowdy().getX() * 40 + 30, game.getHowdy().getY() * 40 + 30), mBoardPaint);
+        mBoardPaint.setColor(Color.BLACK);
+        canvas.drawArc(new RectF(game.getHowdy().getX() * 40 + 10, game.getHowdy().getY() * 40 + 10, game.getHowdy().getX() * 40 + 30, game.getHowdy().getY() * 40 + 30), 0, 360, true, mBoardPaint);
+
+        oneTileDrawable = getResources().getDrawable(R.drawable.howdy_shade);
+
+        toResizeBitmap = ((BitmapDrawable) oneTileDrawable).getBitmap();
+        resizedTileDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(toResizeBitmap, 280, 280, true));
+        resizedTileDrawable.setBounds((this.game.getHowdy().getX() - 3) * 40, (this.game.getHowdy().getY() - 3) * 40, ((this.game.getHowdy().getX() - 3) * 40) + 280, ((this.game.getHowdy().getY() - 3) * 40) + 280);
+        resizedTileDrawable.draw(canvas);
+
+        mBoardPaint.setColor(Color.BLACK);
+        canvas.drawRect(0, 0, this.getWidth(), (this.game.getHowdy().getY() - 3) * 40, mBoardPaint);
+        canvas.drawRect(0, 0, (this.game.getHowdy().getX() - 3) * 40, this.getHeight(), mBoardPaint);
+        canvas.drawRect(0, (this.game.getHowdy().getY() + 3) * 40, this.getWidth(), this.getHeight(), mBoardPaint);
+        canvas.drawRect((this.game.getHowdy().getX() + 3) * 40, 0, this.getWidth(), this.getHeight(), mBoardPaint);
     }
 }
