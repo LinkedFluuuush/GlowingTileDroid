@@ -15,10 +15,13 @@ import android.view.View;
 import com.linkedfluuuush.glowingtile.R;
 import com.linkedfluuuush.glowingtile.core.Game;
 import com.linkedfluuuush.glowingtile.core.Tile;
+import android.util.*;
 
 public class GameBoard extends View {
     private Game game;
     private Paint mBoardPaint;
+
+	private static final String TAG = GameBoard.class.getName();
 
     public GameBoard(Context context) {
         super(context);
@@ -73,7 +76,7 @@ public class GameBoard extends View {
                     break;
                 default:
                     mBoardPaint.setColor(Color.BLACK);
-                    fileName = "";
+                    fileName = "tile";
                     break;
             }
 
@@ -92,6 +95,7 @@ public class GameBoard extends View {
                     break;
             }
 
+			Log.d(TAG, "Drawing " + fileName + " at " + t.getX() + "," + t.getY());
             //canvas.drawRect(t.getX() * 50, t.getY() * 50, (t.getX() * 50) + 50, (t.getY() * 50) + 50, mBoardPaint);
             oneTileDrawable = getResources().getDrawable(getResources().getIdentifier(fileName, "drawable", "com.linkedfluuuush.glowingtile"));
 
