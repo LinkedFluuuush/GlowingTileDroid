@@ -19,7 +19,7 @@ public class MainGame extends Activity {
     private static final String TAG = MainGame.class.getName();
 
     private Game game;
-	private int level = 1;
+	private int level = 0;
 
 	public Game getGame(){
 		return game;
@@ -38,8 +38,7 @@ public class MainGame extends Activity {
 
         final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
         this.game = new Game();
-        this.game.initGame(level,  30, 30);
-        boardView.setGame(this.game);
+        nextLevel();
 
         boardView.setOnTouchListener(new BoardGameTouchListener(this));
     }
@@ -56,9 +55,14 @@ public class MainGame extends Activity {
 	}
 	
 	public void winGame(){
+		nextLevel();
+	}
+	
+	public void nextLevel(){
 		final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
+		this.level++;
 		
-		level++;
 		this.game.initGame(level, boardView.getWidth() / 60, boardView.getHeight() / 60);
+        boardView.setGame(this.game);
 	}
 }

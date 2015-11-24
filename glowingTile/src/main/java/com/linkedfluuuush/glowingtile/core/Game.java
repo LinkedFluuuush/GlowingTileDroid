@@ -6,6 +6,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.Random;
+import java.io.*;
 
 public class Game {
     private Labyrinth labyrinth;
@@ -40,10 +41,10 @@ public class Game {
         return this;
     }
 
-    public Game initGame(String lvlName){
+    public Game initGame(InputStream mapSource){
         try {
-            Log.d(TAG, "Loading labyrinth " + lvlName + "...");
-            this.setLabyrinth(Labyrinth.loadLabyrinth(lvlName));
+            //Log.d(TAG, "Loading labyrinth " + lvlName + "...");
+            this.setLabyrinth(Labyrinth.loadLabyrinth(mapSource));
             this.setHowdy(Howdy.getHowdy());
 
             Log.d(TAG, "Setting Howdy");

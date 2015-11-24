@@ -219,11 +219,10 @@ public class Labyrinth {
         return false;
     }
 
-    public static Labyrinth loadLabyrinth(String lvlName) throws IOException, JSONException {
+    public static Labyrinth loadLabyrinth(InputStream mapSource) throws IOException, JSONException {
         LinkedList<Tile> tiles = new LinkedList<Tile>();
 
-        File mapSource = new File("GlowingTile/resources/levels/" + lvlName + ".json");
-        BufferedReader br = new BufferedReader(new FileReader(mapSource));
+        BufferedReader br = new BufferedReader(new InputStreamReader(mapSource));
 
         String jsonMap = "";
         String line;
