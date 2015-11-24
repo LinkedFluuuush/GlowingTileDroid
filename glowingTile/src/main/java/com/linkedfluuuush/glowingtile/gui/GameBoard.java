@@ -46,13 +46,11 @@ public class GameBoard extends View {
 	public void killHowdy()
 	{
 		for(killingHowdy = 0; killingHowdy < 10; killingHowdy++){
-			try
-			{
-				Thread.sleep(100);
+			//try{
+				//Thread.sleep(100);
 				this.invalidate();
-			}
-			catch (InterruptedException e)
-			{}
+			//}
+			//catch (InterruptedException e){}
 		}
 		
 		killingHowdy = 0;
@@ -137,8 +135,8 @@ public class GameBoard extends View {
         mBoardPaint.setColor(Color.BLACK);
         canvas.drawRect(0, 0, this.getWidth(), (this.game.getHowdy().getY() - 3) * 40, mBoardPaint);
         canvas.drawRect(0, 0, (this.game.getHowdy().getX() - 3) * 40, this.getHeight(), mBoardPaint);
-        canvas.drawRect(0, (this.game.getHowdy().getY() + 3) * 40, this.getWidth(), this.getHeight(), mBoardPaint);
-        canvas.drawRect((this.game.getHowdy().getX() + 3) * 40, 0, this.getWidth(), this.getHeight(), mBoardPaint);
+        canvas.drawRect(0, (this.game.getHowdy().getY() + 4) * 40, this.getWidth(), this.getHeight(), mBoardPaint);
+        canvas.drawRect((this.game.getHowdy().getX() + 4) * 40, 0, this.getWidth(), this.getHeight(), mBoardPaint);
 		
 		for(Tile t : game.getLabyrinth().getTiles()){
             switch (t.getType()){
