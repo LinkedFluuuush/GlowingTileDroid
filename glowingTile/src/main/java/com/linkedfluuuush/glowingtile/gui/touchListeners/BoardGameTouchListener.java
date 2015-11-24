@@ -78,21 +78,21 @@ public class BoardGameTouchListener implements OnTouchListener
 				if(Math.abs(deltaX) >= MIN_DISTANCE || Math.abs(deltaY) >= MIN_DISTANCE){
 					if(Math.abs(deltaX) > Math.abs(deltaY)){ //mvt h
 						if(deltaX < 0){
-							Toast.makeText(mainGame.getApplicationContext(),"Go Right",Toast.LENGTH_SHORT);
+							//Toast.makeText(mainGame.getApplicationContext(),"Go Right",Toast.LENGTH_SHORT).show();
 							Log.d(TAG, "Go Right");
 							game.moveRight();
 						} else {
-							Toast.makeText(mainGame.getApplicationContext(),"Go Left",Toast.LENGTH_SHORT);
+							//Toast.makeText(mainGame.getApplicationContext(),"Go Left",Toast.LENGTH_SHORT).show();
 							Log.d(TAG, "Go Left");
 							game.moveLeft();
 						}
 					} else if(Math.abs(deltaX) < Math.abs(deltaY)){ //mvt v
 						if(deltaY < 0){
-							Toast.makeText(mainGame.getApplicationContext(),"Go Down",Toast.LENGTH_SHORT);
+							//Toast.makeText(mainGame.getApplicationContext(),"Go Down",Toast.LENGTH_SHORT).show();
 							Log.d(TAG, "Go Down");
 							game.moveDown();
 						} else {
-							Toast.makeText(mainGame.getApplicationContext(),"Go Up",Toast.LENGTH_SHORT);
+							//Toast.makeText(mainGame.getApplicationContext(),"Go Up",Toast.LENGTH_SHORT).show();
 							Log.d(TAG, "Go Up");
 							game.moveUp();
 						}
