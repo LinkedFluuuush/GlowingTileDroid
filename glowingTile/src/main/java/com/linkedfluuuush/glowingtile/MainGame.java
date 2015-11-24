@@ -42,4 +42,19 @@ public class MainGame extends Activity {
 
         boardView.setOnTouchListener(new BoardGameTouchListener(this));
     }
+	
+	public void loseGame(){
+		final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
+		
+		boardView.killHowdy();
+		
+		game.reInitGame();
+		
+		boardView.setGame(game);
+		boardView.invalidate();
+	}
+	
+	public void winGame(){
+		
+	}
 }

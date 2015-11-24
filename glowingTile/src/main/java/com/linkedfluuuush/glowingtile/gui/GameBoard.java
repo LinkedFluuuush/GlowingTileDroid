@@ -20,6 +20,11 @@ import android.util.*;
 public class GameBoard extends View {
     private Game game;
     private Paint mBoardPaint;
+	
+	private int killingHowdy = 0;
+	
+	
+	private boolean fading = false;
 
 	private static final String TAG = GameBoard.class.getName();
 
@@ -37,6 +42,21 @@ public class GameBoard extends View {
         super(context, attrs, defStyleAttr);
         init();
     }
+
+	public void killHowdy()
+	{
+		for(killingHowdy = 0; killingHowdy < 10; killingHowdy++){
+			try
+			{
+				Thread.sleep(100);
+				this.invalidate();
+			}
+			catch (InterruptedException e)
+			{}
+		}
+		
+		killingHowdy = 0;
+	}
 
     private void init(){
         mBoardPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -57,6 +77,9 @@ public class GameBoard extends View {
 
         Drawable oneTileDrawable, resizedTileDrawable;
         Bitmap toResizeBitmap;
+		
+		mBoardPaint.setColor(Color.BLACK);
+		canvas.drawRect(0,0,this.getWidth(),this.getHeight(),mBoardPaint);
 
         mBoardPaint.setColor(Color.WHITE);
 
@@ -76,7 +99,7 @@ public class GameBoard extends View {
                     break;
                 default:
                     mBoardPaint.setColor(Color.BLACK);
-                    fileName = "tile";
+                    fileName = "";
                     break;
             }
 
@@ -84,30 +107,26 @@ public class GameBoard extends View {
                 case NEUF:
                     fileName += "";
                     break;
-                case USE:
-                    fileName += "_glowing";
-                    break;
                 case CASSE:
                     fileName += "_broken";
                     break;
                 default:
-                    fileName += "";
+                    fileName = "";
                     break;
             }
 
-			Log.d(TAG, "Drawing " + fileName + " at " + t.getX() + "," + t.getY());
-            //canvas.drawRect(t.getX() * 50, t.getY() * 50, (t.getX() * 50) + 50, (t.getY() * 50) + 50, mBoardPaint);
-            oneTileDrawable = getResources().getDrawable(getResources().getIdentifier(fileName, "drawable", "com.linkedfluuuush.glowingtile"));
+			if(!fileName.equals("")){
+				Log.d(TAG, "Drawing " + fileName + " at " + t.getX() + "," + t.getY());
+   	        	//canvas.drawRect(t.getX() * 50, t.getY() * 50, (t.getX() * 50) + 50, (t.getY() * 50) + 50, mBoardPaint);
+     	    	oneTileDrawable = getResources().getDrawable(getResources().getIdentifier(fileName, "drawable", "com.linkedfluuuush.glowingtile"));
 
-            toResizeBitmap = ((BitmapDrawable) oneTileDrawable).getBitmap();
-            resizedTileDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(toResizeBitmap, 60, 60, true));
-            resizedTileDrawable.setBounds(t.getX() * 40 - 10, t.getY() * 40 - 10, (t.getX() * 40) + 50, (t.getY() * 40) + 50);
-            resizedTileDrawable.draw(canvas);
+        	    toResizeBitmap = ((BitmapDrawable) oneTileDrawable).getBitmap();
+     	    	resizedTileDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(toResizeBitmap, 60, 60, true));
+       	    	resizedTileDrawable.setBounds(t.getX() * 40 - 10, t.getY() * 40 - 10, (t.getX() * 40) + 50, (t.getY() * 40) + 50);
+            	resizedTileDrawable.draw(canvas);
+			}
         }
-
-        mBoardPaint.setColor(Color.BLACK);
-        canvas.drawArc(new RectF(game.getHowdy().getX() * 40 + 10, game.getHowdy().getY() * 40 + 10, game.getHowdy().getX() * 40 + 30, game.getHowdy().getY() * 40 + 30), 0, 360, true, mBoardPaint);
-
+        
         oneTileDrawable = getResources().getDrawable(R.drawable.howdy_shade);
 
         toResizeBitmap = ((BitmapDrawable) oneTileDrawable).getBitmap();
@@ -120,5 +139,49 @@ public class GameBoard extends View {
         canvas.drawRect(0, 0, (this.game.getHowdy().getX() - 3) * 40, this.getHeight(), mBoardPaint);
         canvas.drawRect(0, (this.game.getHowdy().getY() + 3) * 40, this.getWidth(), this.getHeight(), mBoardPaint);
         canvas.drawRect((this.game.getHowdy().getX() + 3) * 40, 0, this.getWidth(), this.getHeight(), mBoardPaint);
+		
+		for(Tile t : game.getLabyrinth().getTiles()){
+            switch (t.getType()){
+                case DEPART:
+                    mBoardPaint.setColor(Color.BLUE);
+                    fileName = "tile";
+                    break;
+                case ARRIVEE:
+                    mBoardPaint.setColor(Color.YELLOW);
+                    fileName = "goal";
+                    break;
+                case NEUTRE:
+                    mBoardPaint.setColor(Color.WHITE);
+                    fileName = "tile";
+                    break;
+                default:
+                    mBoardPaint.setColor(Color.BLACK);
+                    fileName = "";
+                    break;
+            }
+
+            switch (t.getEtat()){
+                case USE:
+					fileName += "_glowing";
+					break;
+                default:
+                    fileName = "";
+                    break;
+            }
+
+			if(!fileName.equals("")){
+				Log.d(TAG, "Drawing " + fileName + " at " + t.getX() + "," + t.getY());
+   	        	//canvas.drawRect(t.getX() * 50, t.getY() * 50, (t.getX() * 50) + 50, (t.getY() * 50) + 50, mBoardPaint);
+     	    	oneTileDrawable = getResources().getDrawable(getResources().getIdentifier(fileName, "drawable", "com.linkedfluuuush.glowingtile"));
+
+        	    toResizeBitmap = ((BitmapDrawable) oneTileDrawable).getBitmap();
+     	    	resizedTileDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(toResizeBitmap, 60, 60, true));
+       	    	resizedTileDrawable.setBounds(t.getX() * 40 - 10, t.getY() * 40 - 10, (t.getX() * 40) + 50, (t.getY() * 40) + 50);
+            	resizedTileDrawable.draw(canvas);
+			}
+        }
+		
+		mBoardPaint.setColor(Color.BLACK);
+        canvas.drawArc(new RectF(game.getHowdy().getX() * 40 + 10 + killingHowdy, game.getHowdy().getY() * 40 + 10 + killingHowdy, game.getHowdy().getX() * 40 + 30 - killingHowdy, game.getHowdy().getY() * 40 + 30 - killingHowdy), 0, 360, true, mBoardPaint);
     }
 }

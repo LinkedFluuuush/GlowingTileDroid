@@ -15,7 +15,7 @@ public class BoardGameTouchListener implements OnTouchListener
 	private MainGame mainGame;
 	
 	private float x1,x2,y1,y2;
-	private static final int MIN_DISTANCE=150;
+	private static final int MIN_DISTANCE=50;
 	
 	public BoardGameTouchListener(MainGame mainGame){
 		super();
@@ -100,6 +100,14 @@ public class BoardGameTouchListener implements OnTouchListener
 					
 					boardView.setGame(game);
 					boardView.invalidate();
+				}
+				
+				if(game.isLost()){
+					mainGame.loseGame();
+				}
+				
+				if(game.isWon()){
+					mainGame.winGame();
 				}
 				break;
 		}
