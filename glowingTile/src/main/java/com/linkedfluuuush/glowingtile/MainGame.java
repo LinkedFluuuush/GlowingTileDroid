@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import android.widget.*;
 
 
 public class MainGame extends Activity {
@@ -27,7 +28,7 @@ public class MainGame extends Activity {
 
     private Game game;
 	private int level = 5;
-    private List<String> allLevels;
+    private List<String> allDoneLevels;
 
 	public Game getGame(){
 		return game;
@@ -44,34 +45,44 @@ public class MainGame extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main_game);
 
-        allLevels = new ArrayList<>();
+        allDoneLevels = new ArrayList<>();
         AssetManager am = getResources().getAssets();
-
-        try {
-            allLevels = Arrays.asList(am.list("levels"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
         this.game = new Game();
-        nextLevel();
 
         boardView.setOnTouchListener(new BoardGameTouchListener(this));
     }
 
 	@Override
-	protected void onResume()
+	protected void onStart()
 	{
 		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
 		
 		this.level = prefs.getInt("level", 0);
+		String mapJson = prefs.getString("map", null);
 		
-		super.onResume();
+		if(mapJson == null){
+			this.nextLevel();
+		} else {
+			this.game.initGame(mapJson);
+			String howdyPosition = prefs.getString("howdy", null);
+			
+			if(howdyPosition != null){
+				this.game.setHowdyPosition(howdyPosition);
+			}
+		}
+        
+        ((GameBoard) findViewById(R.id.gameBoard)).setGame(this.game);
+        findViewById(R.id.gameBoard).invalidate();
+        
+        Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
+		
+		super.onStart();
 	}
 
 	@Override
-	protected void onPause()
+	protected void onStop()
 	{
 		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
@@ -82,7 +93,7 @@ public class MainGame extends Activity {
 		
 		editor.commit();
 		
-		super.onPause();
+		super.onStop();
 	}
 	
 	public void loseGame(){
@@ -132,10 +143,20 @@ public class MainGame extends Activity {
 
         if(!loaded) {
             Random r = new Random();
+            
+            List<String> allLevels = new ArrayList<>();
+            
+            try {
+                allLevels = Arrays.asList(am.list("levels"));
+            } catch (IOException e) {}
 
-            if(r.nextBoolean() && !allLevels.isEmpty()){
+            if(r.nextBoolean() && !allLevels.isEmpty() && allLevels.size() != allDoneLevels.size()){
                 try {
-                    int nLevel = r.nextInt(allLevels.size());
+                    int nLevel;
+                    do{
+                        nLevel = r.nextInt(allLevels.size());
+                    } while (allDoneLevels.contains(allLevels.get(nLevel)));
+                    
                     String name = allLevels.get(nLevel);
                     BufferedReader br = new BufferedReader(new InputStreamReader(am.open("levels/" + name)));
 
@@ -148,7 +169,7 @@ public class MainGame extends Activity {
 
                     br.close();
 
-                    allLevels.remove(nLevel);
+                    allDoneLevels.add(name);
 
                     game.initGame(levelJSON);
                 } catch (IOException e) {

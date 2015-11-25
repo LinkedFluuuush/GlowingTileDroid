@@ -29,9 +29,11 @@ public class Labyrinth {
 			
 			if(t.getEtat() == Tile.Etat.USE){
 				if(t.getType() == Tile.Type.ARRIVEE){
-					jSon += "U";
-				} else {
 					jSon += "AU";
+				} else if(t.getType() == Tile.Type.DEPART){
+					jSon += "D";
+				} else {
+					jSon += "U";
 				}
 			} else {
 				switch(t.getType()){
@@ -51,10 +53,14 @@ public class Labyrinth {
 			}
 			
 			jSon += "\"";
-			jSon += "}";
+			jSon += "},";
 		}
 		
+		jSon = jSon.substring(0, jSon.length()-1);
+		
 		jSon += "]";
+		
+		Log.v(TAG, "Generated Json : " + jSon);
 		
 		return jSon;
 	}

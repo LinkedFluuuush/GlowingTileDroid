@@ -7,6 +7,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.Random;
 import java.io.*;
+import org.json.*;
 
 public class Game {
     private Labyrinth labyrinth;
@@ -24,9 +25,20 @@ public class Game {
         this.howdy = null;
     }
 
+	public void setHowdyPosition(String howdyPosition)
+	{
+		try
+		{
+			JSONObject hPos = new JSONObject(howdyPosition);
+			this.getHowdy().setPosition(hPos.get("x"), hPos.get("y"));
+		}
+		catch (JSONException e)
+		{}
+	}
+
 	public String getJsonHowdy()
 	{
-		String jSon = "Howdy:{\"x\":" + this.getHowdy().getX();
+		String jSon = "{\"x\":" + this.getHowdy().getX();
 		jSon += ",\"y\":" + this.getHowdy().getY();
 		
 		jSon += "}";
