@@ -75,6 +75,12 @@ public class MainGame extends Activity {
             Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
 		}
         
+        String allDoneLevelsString = prefs.getString("doneLevels", null);
+        
+        if(allDoneLevelsString != null){
+            allDoneLevels = Arrays.asList(allDoneLevelsString.split(","));
+        }
+        
         ((GameBoard) findViewById(R.id.gameBoard)).setGame(this.game);
         findViewById(R.id.gameBoard).invalidate();
 		
@@ -90,6 +96,14 @@ public class MainGame extends Activity {
 		editor.putInt("level", this.level);
 		editor.putString("map", game.getLabyrinth().getJsonMap());
 		editor.putString("howdy", game.getJsonHowdy());
+        
+        String allDoneLevelsString = "";
+        
+        for(String s : allDoneLevels){
+            allDoneLevelsString += s + ",";
+        }
+        
+        editor.putString("doneLevels", allDoneLevelsString.substring(0, allDoneLevelsString.length() - 1));
 		
 		editor.commit();
 		
