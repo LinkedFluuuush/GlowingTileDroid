@@ -14,7 +14,7 @@ public class BoardGameTouchListener implements OnTouchListener {
 	private MainGame mainGame;
 
 	private float x1,x2,y1,y2;
-    private boolean movedByProxi = false;
+    private boolean movedByProxi = false, movedBySwipe = false;
 	private static final int MIN_DISTANCE=50;
 
 	public BoardGameTouchListener(MainGame mainGame) {
@@ -59,51 +59,56 @@ public class BoardGameTouchListener implements OnTouchListener {
 
 		/*boardView.setGame(game);
          boardView.invalidate();*/
-         
-         float x = event.getX();
-         float y = event.getY();
-         
-        Log.d(TAG, "Howdy at " + game.getHowdy().getX() * 40 + "," + game.getHowdy().getY() * 40);
-        Log.d(TAG, "Down with coords " + x + "," + y);
 
-        if (x >= game.getHowdy().getX() * 40 && x <= (game.getHowdy().getX() + 1) * 40) {
-            Log.d(TAG, "Same row");
-            if (y <= game.getHowdy().getY() * 40 && y >= (game.getHowdy().getY() - 1) * 40) {
-                Log.d(TAG, "Go Up");
-                game.moveUp();
-                boardView.setGame(game);
-                boardView.invalidate();
-                movedByProxi = true;
-            } else if (y <= (game.getHowdy().getY() + 2) * 40 && y >= (game.getHowdy().getY() + 1) * 40) {
-                Log.d(TAG, "Go Down");
-                game.moveDown();
-                boardView.setGame(game);
-                boardView.invalidate();
-                movedByProxi = true;
-            }
-        } else {
-            if (y >= game.getHowdy().getY() * 40 && y <= (game.getHowdy().getY() + 1) * 40) {
-                Log.d(TAG, "Same column");
-                if (x <= game.getHowdy().getX() * 40 && x >= (game.getHowdy().getX() - 1) * 40) {
-                    Log.d(TAG, "Go Left");
-                    game.moveLeft();
+        if (!movedBySwipe) {
+            float x = event.getX();
+            float y = event.getY();
+
+            Log.d(TAG, "Howdy at " + game.getHowdy().getX() * 40 + "," + game.getHowdy().getY() * 40);
+            Log.d(TAG, "Down with coords " + x + "," + y);
+
+            if (x >= game.getHowdy().getX() * 40 && x <= (game.getHowdy().getX() + 1) * 40) {
+                Log.d(TAG, "Same row");
+                if (y <= game.getHowdy().getY() * 40 && y >= (game.getHowdy().getY() - 1) * 40) {
+                    Log.d(TAG, "Go Up");
+                    game.moveUp();
                     boardView.setGame(game);
                     boardView.invalidate();
                     movedByProxi = true;
-                } else if (x <= (game.getHowdy().getX() + 2) * 40 && x >= (game.getHowdy().getX() + 1) * 40) {
-                    Log.d(TAG, "Go Right");
-                    game.moveRight();
+                } else if (y <= (game.getHowdy().getY() + 2) * 40 && y >= (game.getHowdy().getY() + 1) * 40) {
+                    Log.d(TAG, "Go Down");
+                    game.moveDown();
                     boardView.setGame(game);
                     boardView.invalidate();
                     movedByProxi = true;
+                }
+            } else {
+                if (y >= game.getHowdy().getY() * 40 && y <= (game.getHowdy().getY() + 1) * 40) {
+                    Log.d(TAG, "Same column");
+                    if (x <= game.getHowdy().getX() * 40 && x >= (game.getHowdy().getX() - 1) * 40) {
+                        Log.d(TAG, "Go Left");
+                        game.moveLeft();
+                        boardView.setGame(game);
+                        boardView.invalidate();
+                        movedByProxi = true;
+                    } else if (x <= (game.getHowdy().getX() + 2) * 40 && x >= (game.getHowdy().getX() + 1) * 40) {
+                        Log.d(TAG, "Go Right");
+                        game.moveRight();
+                        boardView.setGame(game);
+                        boardView.invalidate();
+                        movedByProxi = true;
+                    }
                 }
             }
         }
 
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				x1 = event.getX();
-				y1 = event.getY();
+                if (!movedByProxi) {
+                    x1 = event.getX();
+                    y1 = event.getY();
+                    movedBySwipe = true;
+                }
 				break;
 			case MotionEvent.ACTION_UP:
                 if (movedByProxi) {
@@ -146,6 +151,8 @@ public class BoardGameTouchListener implements OnTouchListener {
                     }
                 }
                 
+                movedBySwipe = false;
+
                 if (game.isLost()) {
                     mainGame.loseGame();
                 }
