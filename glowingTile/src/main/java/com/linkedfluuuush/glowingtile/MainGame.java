@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.linkedfluuuush.glowingtile.core.Game;
 import com.linkedfluuuush.glowingtile.gui.GameBoard;
 import com.linkedfluuuush.glowingtile.gui.touchListeners.*;
+import android.content.*;
 
 
 public class MainGame extends Activity {
@@ -42,6 +43,31 @@ public class MainGame extends Activity {
 
         boardView.setOnTouchListener(new BoardGameTouchListener(this));
     }
+
+	@Override
+	protected void onResume()
+	{
+		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+		
+		this.level = prefs.getInt("level", 0);
+		
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause()
+	{
+		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+		
+		editor.putInt("level", this.level);
+		editor.putString("map", game.getLabyrinth().getJsonMap());
+		editor.putString("howdy", game.getJsonHowdy());
+		
+		editor.commit();
+		
+		super.onPause();
+	}
 	
 	public void loseGame(){
 		final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);

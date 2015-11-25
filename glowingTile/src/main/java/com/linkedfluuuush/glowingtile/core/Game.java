@@ -24,6 +24,15 @@ public class Game {
         this.howdy = null;
     }
 
+	public String getJsonHowdy()
+	{
+		String jSon = "Howdy:{\"x\":" + this.getHowdy().getX();
+		jSon += ",\"y\":" + this.getHowdy().getY();
+		
+		jSon += "}";
+		return jSon;
+	}
+
     public Game initGame(int lvl, int maxWidth, int maxHeight){
         Log.d(TAG, "Generating labyrinth...");
         this.setLabyrinth(Labyrinth.generateLabyrinth(lvl, maxWidth, maxHeight));

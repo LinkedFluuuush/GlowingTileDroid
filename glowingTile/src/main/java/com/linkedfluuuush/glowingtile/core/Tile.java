@@ -46,7 +46,10 @@ public class Tile {
         } else if (type.equals("U")) {
             this.setType(Type.NEUTRE);
             this.setEtat(Etat.USE);
-        } else {
+        } else if (type.equals("AU")){
+			this.setType(Type.ARRIVEE);
+			this.setEtat(Etat.USE);
+		} else {
             this.setType(Type.VIDE);
         }
     }

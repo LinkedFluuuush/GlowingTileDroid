@@ -18,6 +18,47 @@ public class Labyrinth {
         this.tiles = tiles;
     }
 
+	public String getJsonMap()
+	{
+		String jSon = "[";
+		
+		for(Tile t : this.getTiles()){
+			jSon += "{\"x\":" + t.getX() + ",";
+			jSon += "\"y\":" + t.getY() + ",";
+			jSon += "\"t\":\"";
+			
+			if(t.getEtat() == Tile.Etat.USE){
+				if(t.getType() == Tile.Type.ARRIVEE){
+					jSon += "U";
+				} else {
+					jSon += "AU";
+				}
+			} else {
+				switch(t.getType()){
+					case DEPART:
+						jSon += "D";
+						break;
+					case ARRIVEE:
+						jSon += "A";
+						break;
+					case NEUTRE:
+						jSon += "N";
+						break;
+					case VIDE:
+						jSon += "V";
+						break;
+				}
+			}
+			
+			jSon += "\"";
+			jSon += "}";
+		}
+		
+		jSon += "]";
+		
+		return jSon;
+	}
+
     public LinkedList<Tile> getTiles() {
         return tiles;
     }
