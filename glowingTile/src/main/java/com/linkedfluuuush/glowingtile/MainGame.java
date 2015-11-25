@@ -71,12 +71,12 @@ public class MainGame extends Activity {
 			if(howdyPosition != null){
 				this.game.setHowdyPosition(howdyPosition);
 			}
+            
+            Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
 		}
         
         ((GameBoard) findViewById(R.id.gameBoard)).setGame(this.game);
         findViewById(R.id.gameBoard).invalidate();
-        
-        Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
 		
 		super.onStart();
 	}
@@ -183,5 +183,7 @@ public class MainGame extends Activity {
         //am.close();
 
         boardView.setGame(this.game);
+        
+        Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
 	}
 }
