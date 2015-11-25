@@ -2,11 +2,8 @@ package com.linkedfluuuush.glowingtile;
 
 
 import android.app.Activity;
-import android.nfc.Tag;
+import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -15,12 +12,22 @@ import com.linkedfluuuush.glowingtile.gui.GameBoard;
 import com.linkedfluuuush.glowingtile.gui.touchListeners.*;
 import android.content.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 
 public class MainGame extends Activity {
     private static final String TAG = MainGame.class.getName();
 
     private Game game;
-	private int level = 0;
+	private int level = 5;
+    private List<String> allLevels;
 
 	public Game getGame(){
 		return game;
@@ -36,6 +43,15 @@ public class MainGame extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main_game);
+
+        allLevels = new ArrayList<>();
+        AssetManager am = getResources().getAssets();
+
+        try {
+            allLevels = Arrays.asList(am.list("levels"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
         this.game = new Game();
@@ -85,10 +101,66 @@ public class MainGame extends Activity {
 	}
 	
 	public void nextLevel(){
+        boolean loaded = false;
 		final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
 		this.level++;
-		
-		this.game.initGame(level, boardView.getWidth() / 60, boardView.getHeight() / 60);
+
+        AssetManager am = getResources().getAssets();
+
+        try {
+            String[] allTutoLevels = am.list("levels/tutorial");
+
+            for(String name : allTutoLevels){
+                if(name.startsWith(this.level + "")){
+                    BufferedReader br = new BufferedReader(new InputStreamReader(am.open("levels/tutorial/" + name)));
+                    String line;
+                    String levelJSON = "";
+
+                    while((line = br.readLine()) != null){
+                        levelJSON += line + "\n";
+                    }
+
+                    br.close();
+
+                    game.initGame(levelJSON);
+                    loaded = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(!loaded) {
+            Random r = new Random();
+
+            if(r.nextBoolean() && !allLevels.isEmpty()){
+                try {
+                    int nLevel = r.nextInt(allLevels.size());
+                    String name = allLevels.get(nLevel);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(am.open("levels/" + name)));
+
+                    String line;
+                    String levelJSON = "";
+
+                    while((line = br.readLine()) != null){
+                        levelJSON += line + "\n";
+                    }
+
+                    br.close();
+
+                    allLevels.remove(nLevel);
+
+                    game.initGame(levelJSON);
+                } catch (IOException e) {
+                    this.game.initGame(level, boardView.getWidth() / 60, boardView.getHeight() / 60);
+                }
+            } else {
+                this.game.initGame(level, boardView.getWidth() / 60, boardView.getHeight() / 60);
+            }
+        }
+
+        //am.close();
+
         boardView.setGame(this.game);
 	}
 }

@@ -110,7 +110,7 @@ public class Labyrinth {
         if(maxHeight > 0 && maxWidth > 0) {
             Random r = new Random();
             Tile tileDepart = new Tile(r.nextInt(maxWidth), r.nextInt(maxHeight), Tile.Type.DEPART);
-            LinkedList<Tile> tiles = new LinkedList<Tile>();
+            LinkedList<Tile> tiles = new LinkedList<>();
             tiles.add(tileDepart);
 
             LinkedList<Tile> newTiles = generateStep(tiles, lvl, maxWidth, maxHeight);
@@ -260,19 +260,10 @@ public class Labyrinth {
         return false;
     }
 
-    public static Labyrinth loadLabyrinth(InputStream mapSource) throws IOException, JSONException {
-        LinkedList<Tile> tiles = new LinkedList<Tile>();
+    public static Labyrinth loadLabyrinth(String mapJSONSource) throws IOException, JSONException {
+        LinkedList<Tile> tiles = new LinkedList<>();
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(mapSource));
-
-        String jsonMap = "";
-        String line;
-
-        while((line = br.readLine()) != null){
-            jsonMap += line;
-        }
-
-        JSONArray tileArray = new JSONArray(jsonMap);
+        JSONArray tileArray = new JSONArray(mapJSONSource);
 
         for(int i = 0 ; i < tileArray.length() ; i++){
             tiles.add(new Tile(tileArray.getJSONObject(i).getInt("x"),

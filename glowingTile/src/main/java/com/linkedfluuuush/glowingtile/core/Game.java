@@ -50,10 +50,10 @@ public class Game {
         return this;
     }
 
-    public Game initGame(InputStream mapSource){
+    public Game initGame(String mapJSONSource){
         try {
             //Log.d(TAG, "Loading labyrinth " + lvlName + "...");
-            this.setLabyrinth(Labyrinth.loadLabyrinth(mapSource));
+            this.setLabyrinth(Labyrinth.loadLabyrinth(mapJSONSource));
             this.setHowdy(Howdy.getHowdy());
 
             Log.d(TAG, "Setting Howdy");
@@ -63,9 +63,7 @@ public class Game {
                 }
             }
             Log.d(TAG, "Howdy set to (" + this.getHowdy().getX() + ", " + this.getHowdy().getY() + ")");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 
