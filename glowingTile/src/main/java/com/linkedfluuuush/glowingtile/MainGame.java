@@ -1,26 +1,18 @@
 package com.linkedfluuuush.glowingtile;
 
 
-import android.app.Activity;
-import android.content.res.AssetManager;
-import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
-
-import com.linkedfluuuush.glowingtile.core.Game;
-import com.linkedfluuuush.glowingtile.gui.GameBoard;
-import com.linkedfluuuush.glowingtile.gui.touchListeners.*;
+import android.app.*;
 import android.content.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import android.content.res.*;
+import android.os.*;
+import android.view.*;
 import android.widget.*;
+import com.linkedfluuuush.glowingtile.core.*;
+import com.linkedfluuuush.glowingtile.gui.*;
+import com.linkedfluuuush.glowingtile.gui.touchListeners.*;
+import java.io.*;
+import java.util.*;
+import android.util.*;
 
 
 public class MainGame extends Activity {
@@ -103,7 +95,9 @@ public class MainGame extends Activity {
             allDoneLevelsString += s + ",";
         }
         
-        editor.putString("doneLevels", allDoneLevelsString.substring(0, allDoneLevelsString.length() - 1));
+        if(allDoneLevelsString.length() > 0){
+            editor.putString("doneLevels", allDoneLevelsString.substring(0, allDoneLevelsString.length() - 1));
+        }
 		
 		editor.commit();
 		
@@ -133,10 +127,16 @@ public class MainGame extends Activity {
         AssetManager am = getResources().getAssets();
 
         try {
-            String[] allTutoLevels = am.list("levels/tutorial");
+            List<String> allTutoLevels = new LinkedList<String>(Arrays.asList(am.list("levels/tutorial")));
+            
+            //if(addMsg){
+            //    allTutoLevels.addAll(Arrays.asList(am.list("msg")));
+            //}
+            
+            Log.d(TAG, allTutoLevels.toString());
 
             for(String name : allTutoLevels){
-                if(name.startsWith(this.level + "")){
+                if(name.startsWith(this.level + ".")){
                     BufferedReader br = new BufferedReader(new InputStreamReader(am.open("levels/tutorial/" + name)));
                     String line;
                     String levelJSON = "";
