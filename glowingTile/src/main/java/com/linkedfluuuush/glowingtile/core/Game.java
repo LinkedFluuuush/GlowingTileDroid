@@ -30,7 +30,7 @@ public class Game {
 		try
 		{
 			JSONObject hPos = new JSONObject(howdyPosition);
-			this.getHowdy().setPosition(hPos.get("x"), hPos.get("y"));
+			this.getHowdy().setPosition((Integer) hPos.get("x"), (Integer) hPos.get("y"));
 		}
 		catch (JSONException e)
 		{}

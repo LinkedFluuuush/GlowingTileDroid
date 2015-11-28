@@ -1,4 +1,6 @@
 package com.linkedfluuuush.glowingtile.gui.touchListeners;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.view.View.*;
 import android.view.*;
 import android.util.*;
@@ -24,7 +26,7 @@ public class BoardGameTouchListener implements OnTouchListener {
 
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
-		GameBoard boardView = (GameBoard) view;
+		final GameBoard boardView = (GameBoard) view;
 		Game game = mainGame.getGame();
 
 		/*MotionEvent.PointerCoords coords = new MotionEvent.PointerCoords();
@@ -158,7 +160,20 @@ public class BoardGameTouchListener implements OnTouchListener {
                 }
 
                 if (game.isWon()) {
-                    mainGame.winGame();
+                    Log.d(TAG, "Game won !");
+                    boardView.animate()
+                            .alpha(0f)
+                            .setDuration(1000)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    mainGame.winGame();
+                                    boardView.animate()
+                                            .alpha(1f)
+                                            .setDuration(1000)
+                                            .setListener(null);
+                                }
+                            });
                 }
 				break;
 		}

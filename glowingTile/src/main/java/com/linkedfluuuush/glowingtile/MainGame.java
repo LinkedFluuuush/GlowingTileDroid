@@ -197,6 +197,7 @@ public class MainGame extends Activity {
         //am.close();
 
         boardView.setGame(this.game);
+        boardView.invalidate();
         
         Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
 	}
