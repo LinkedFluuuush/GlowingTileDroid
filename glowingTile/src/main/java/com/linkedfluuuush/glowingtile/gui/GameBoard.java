@@ -21,10 +21,7 @@ public class GameBoard extends View {
     private Game game;
     private Paint mBoardPaint;
 
-	private int killingHowdy = 0;
-
-
-	private boolean fading = false;
+	private HowdyView howdyView;
 
 	private static final String TAG = GameBoard.class.getName();
 
@@ -43,18 +40,6 @@ public class GameBoard extends View {
         init();
     }
 
-	public void killHowdy() {
-		for (killingHowdy = 0; killingHowdy < 10; killingHowdy++) {
-			//try{
-            //Thread.sleep(100);
-            this.invalidate();
-			//}
-			//catch (InterruptedException e){}
-		}
-
-		killingHowdy = 0;
-	}
-
     private void init() {
         mBoardPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBoardPaint.setColor(Color.BLACK);
@@ -64,6 +49,8 @@ public class GameBoard extends View {
 
     public void setGame(Game game) {
         this.game = game;
+        this.howdyView.setPosition(this.game.getHowdy().getX() * 40, this.game.getHowdy().getY() * 40);
+        Log.d(TAG, "Position : " + this.howdyView.getX() + ", " + this.howdyView.getY());
     }
 
     @Override
@@ -106,7 +93,7 @@ public class GameBoard extends View {
 						fileName += "";
 						break;
 					case CASSE:
-						fileName += "_broken";
+						fileName += "_glowing";
 						break;
 					default:
 						fileName = "";
@@ -179,8 +166,15 @@ public class GameBoard extends View {
 				}
 			}
 
-			mBoardPaint.setColor(Color.BLACK);
-			canvas.drawArc(new RectF(game.getHowdy().getX() * 40 + 10 + killingHowdy, game.getHowdy().getY() * 40 + 10 + killingHowdy, game.getHowdy().getX() * 40 + 30 - killingHowdy, game.getHowdy().getY() * 40 + 30 - killingHowdy), 0, 360, true, mBoardPaint);
+            this.howdyView.invalidate();
 		}
+    }
+
+    public void setHowdyView(HowdyView howdyView) {
+        this.howdyView = howdyView;
+    }
+
+    public HowdyView getHowdyView() {
+        return howdyView;
     }
 }

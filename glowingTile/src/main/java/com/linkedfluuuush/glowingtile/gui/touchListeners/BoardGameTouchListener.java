@@ -7,6 +7,9 @@ import android.util.*;
 import com.linkedfluuuush.glowingtile.gui.*;
 import com.linkedfluuuush.glowingtile.*;
 import com.linkedfluuuush.glowingtile.core.*;
+
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.*;
 
 public class BoardGameTouchListener implements OnTouchListener {
@@ -152,11 +155,26 @@ public class BoardGameTouchListener implements OnTouchListener {
                         boardView.invalidate();
                     }
                 }
-                
+
                 movedBySwipe = false;
 
                 if (game.isLost()) {
-                    mainGame.loseGame();
+                    Log.d(TAG, "Game lost !");
+
+                    boardView.getHowdyView().animate()
+                            .scaleX(0)
+                            .scaleY(0)
+                            .x((game.getHowdy().getX()) * 40)
+                            .y((game.getHowdy().getY()) * 40)
+                            .setDuration(500)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    mainGame.loseGame();
+                                    boardView.getHowdyView().setScaleX(1);
+                                    boardView.getHowdyView().setScaleY(1);
+                                }
+                            });
                 }
 
                 if (game.isWon()) {

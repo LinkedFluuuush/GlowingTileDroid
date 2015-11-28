@@ -17,4 +17,10 @@
         android:layout_height="match_parent"
         android:id="@+id/gameBoard"
         android:layout_gravity="center" />
+
+    <com.linkedfluuuush.glowingtile.gui.HowdyView
+        android:layout_width="40px"
+        android:layout_height="40px"
+        android:id="@+id/howdyView"
+        android:layout_gravity="left|top" />
 </FrameLayout>

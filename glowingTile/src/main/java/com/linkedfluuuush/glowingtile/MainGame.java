@@ -41,8 +41,10 @@ public class MainGame extends Activity {
         AssetManager am = getResources().getAssets();
 
         final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
+        final HowdyView howdyView = (HowdyView) this.findViewById(R.id.howdyView);
         this.game = new Game();
 
+        boardView.setHowdyView(howdyView);
         boardView.setOnTouchListener(new BoardGameTouchListener(this));
     }
 
@@ -75,7 +77,8 @@ public class MainGame extends Activity {
         
         ((GameBoard) findViewById(R.id.gameBoard)).setGame(this.game);
         findViewById(R.id.gameBoard).invalidate();
-		
+        ((GameBoard) findViewById(R.id.gameBoard)).getHowdyView().invalidate();
+
 		super.onStart();
 	}
 
@@ -106,9 +109,7 @@ public class MainGame extends Activity {
 	
 	public void loseGame(){
 		final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
-		
-		boardView.killHowdy();
-		
+
 		game.reInitGame();
 		
 		boardView.setGame(game);
@@ -198,6 +199,7 @@ public class MainGame extends Activity {
 
         boardView.setGame(this.game);
         boardView.invalidate();
+        boardView.getHowdyView().invalidate();
         
         Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
 	}
