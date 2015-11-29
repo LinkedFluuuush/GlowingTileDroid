@@ -5,14 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.linkedfluuuush.glowingtile.R;
 import com.linkedfluuuush.glowingtile.core.Game;
 import com.linkedfluuuush.glowingtile.core.Tile;
 import android.util.*;
@@ -21,10 +18,9 @@ public class GameBoard extends View {
     private Game game;
     private Paint mBoardPaint;
 
-	private int killingHowdy = 0;
-
-
-	private boolean fading = false;
+	private HowdyShadeView howdyShadeView;
+	private HowdyView howdyView;
+    private GlowingBoard glowingBoard;
 
 	private static final String TAG = GameBoard.class.getName();
 
@@ -43,18 +39,6 @@ public class GameBoard extends View {
         init();
     }
 
-	public void killHowdy() {
-		for (killingHowdy = 0; killingHowdy < 10; killingHowdy++) {
-			//try{
-            //Thread.sleep(100);
-            this.invalidate();
-			//}
-			//catch (InterruptedException e){}
-		}
-
-		killingHowdy = 0;
-	}
-
     private void init() {
         mBoardPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBoardPaint.setColor(Color.BLACK);
@@ -64,6 +48,12 @@ public class GameBoard extends View {
 
     public void setGame(Game game) {
         this.game = game;
+        this.howdyShadeView.setPosition((this.game.getHowdy().getX() - 6) * 40, (this.game.getHowdy().getY() - 6) * 40);
+        Log.d(TAG, "Position : " + this.howdyShadeView.getX() + ", " + this.howdyShadeView.getY());
+        this.glowingBoard.setGame(game);
+        this.howdyView.setPosition((this.game.getHowdy().getX()) * 40, (this.game.getHowdy().getY()) * 40);
+        Log.d(TAG, "Position : " + this.howdyView.getX() + ", " + this.howdyView.getY());
+
     }
 
     @Override
@@ -105,8 +95,11 @@ public class GameBoard extends View {
 					case NEUF:
 						fileName += "";
 						break;
+                    case USE:
+                        fileName += "";
+                        break;
 					case CASSE:
-						fileName += "_broken";
+						fileName += "_glowing";
 						break;
 					default:
 						fileName = "";
@@ -125,20 +118,14 @@ public class GameBoard extends View {
 				}
 			}
 
-			oneTileDrawable = getResources().getDrawable(R.drawable.howdy_shade);
-
-			toResizeBitmap = ((BitmapDrawable) oneTileDrawable).getBitmap();
-			resizedTileDrawable = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(toResizeBitmap, 280, 280, true));
-			resizedTileDrawable.setBounds((this.game.getHowdy().getX() - 3) * 40, (this.game.getHowdy().getY() - 3) * 40, ((this.game.getHowdy().getX() - 3) * 40) + 280, ((this.game.getHowdy().getY() - 3) * 40) + 280);
-			resizedTileDrawable.draw(canvas);
-
 			mBoardPaint.setColor(Color.BLACK);
-			canvas.drawRect(0, 0, this.getWidth(), (this.game.getHowdy().getY() - 3) * 40, mBoardPaint);
-			canvas.drawRect(0, 0, (this.game.getHowdy().getX() - 3) * 40, this.getHeight(), mBoardPaint);
-			canvas.drawRect(0, (this.game.getHowdy().getY() + 4) * 40, this.getWidth(), this.getHeight(), mBoardPaint);
-			canvas.drawRect((this.game.getHowdy().getX() + 4) * 40, 0, this.getWidth(), this.getHeight(), mBoardPaint);
+			canvas.drawRect(0, 0, this.getWidth(), (this.game.getHowdy().getY() - 4) * 40, mBoardPaint);
+			canvas.drawRect(0, 0, (this.game.getHowdy().getX() - 4) * 40, this.getHeight(), mBoardPaint);
+			canvas.drawRect(0, (this.game.getHowdy().getY() + 5) * 40, this.getWidth(), this.getHeight(), mBoardPaint);
+			canvas.drawRect((this.game.getHowdy().getX() + 5) * 40, 0, this.getWidth(), this.getHeight(), mBoardPaint);
 
-			for (Tile t : game.getLabyrinth().getTiles()) {
+
+			/*for (Tile t : game.getLabyrinth().getTiles()) {
 				switch (t.getType()) {
 					case DEPART:
 						mBoardPaint.setColor(Color.BLUE);
@@ -177,10 +164,34 @@ public class GameBoard extends View {
 					resizedTileDrawable.setBounds(t.getX() * 40 - 10, t.getY() * 40 - 10, (t.getX() * 40) + 50, (t.getY() * 40) + 50);
 					resizedTileDrawable.draw(canvas);
 				}
-			}
+			}*/
 
-			mBoardPaint.setColor(Color.BLACK);
-			canvas.drawArc(new RectF(game.getHowdy().getX() * 40 + 10 + killingHowdy, game.getHowdy().getY() * 40 + 10 + killingHowdy, game.getHowdy().getX() * 40 + 30 - killingHowdy, game.getHowdy().getY() * 40 + 30 - killingHowdy), 0, 360, true, mBoardPaint);
+            this.howdyShadeView.invalidate();
+            this.glowingBoard.invalidate();
 		}
+    }
+
+    public void setHowdyShadeView(HowdyShadeView howdyShadeView) {
+        this.howdyShadeView = howdyShadeView;
+    }
+
+    public HowdyShadeView getHowdyShadeView() {
+        return howdyShadeView;
+    }
+
+    public GlowingBoard getGlowingBoard() {
+        return glowingBoard;
+    }
+
+    public void setGlowingBoard(GlowingBoard glowingBoard) {
+        this.glowingBoard = glowingBoard;
+    }
+
+    public HowdyView getHowdyView() {
+        return howdyView;
+    }
+
+    public void setHowdyView(HowdyView howdyView) {
+        this.howdyView = howdyView;
     }
 }

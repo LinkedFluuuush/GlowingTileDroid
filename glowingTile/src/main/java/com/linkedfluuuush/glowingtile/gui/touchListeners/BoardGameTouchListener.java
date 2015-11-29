@@ -7,7 +7,6 @@ import android.util.*;
 import com.linkedfluuuush.glowingtile.gui.*;
 import com.linkedfluuuush.glowingtile.*;
 import com.linkedfluuuush.glowingtile.core.*;
-import android.widget.*;
 
 public class BoardGameTouchListener implements OnTouchListener {
 
@@ -27,7 +26,7 @@ public class BoardGameTouchListener implements OnTouchListener {
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 		final GameBoard boardView = (GameBoard) view;
-		Game game = mainGame.getGame();
+		final Game game = mainGame.getGame();
 
 		/*MotionEvent.PointerCoords coords = new MotionEvent.PointerCoords();
          event.getPointerCoords(0, coords);
@@ -129,55 +128,155 @@ public class BoardGameTouchListener implements OnTouchListener {
                         if (Math.abs(deltaX) > Math.abs(deltaY)) { //mvt h
                             if (deltaX < 0) {
                                 //Toast.makeText(mainGame.getApplicationContext(),"Go Right",Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, "Go Right");
-                                game.moveRight();
+                                if(game.canMoveRight()) {
+                                    Log.d(TAG, "Go Right");
+                                    boardView.getHowdyShadeView().animate()
+                                            .x((game.getHowdy().getX() - 5) * 40)
+                                            .setDuration(100)
+                                            .setListener(null);
+
+                                    boardView.getHowdyView().animate()
+                                            .x((game.getHowdy().getX() + 1) * 40)
+                                            .setDuration(100)
+                                            .setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    super.onAnimationEnd(animation);
+                                                    game.moveRight();
+                                                    endMovement(game, boardView);
+                                                }
+                                            });
+                                }
                             } else {
                                 //Toast.makeText(mainGame.getApplicationContext(),"Go Left",Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, "Go Left");
-                                game.moveLeft();
+                                if(game.canMoveLeft()) {
+                                    Log.d(TAG, "Go Left");
+                                    boardView.getHowdyShadeView().animate()
+                                            .x((game.getHowdy().getX() - 7) * 40)
+                                            .setDuration(100)
+                                            .setListener(null);
+
+                                    boardView.getHowdyView().animate()
+                                            .x((game.getHowdy().getX()  - 1) * 40)
+                                            .setDuration(100)
+                                            .setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    super.onAnimationEnd(animation);
+                                                    game.moveLeft();
+                                                    endMovement(game, boardView);
+                                                }
+                                            });
+
+                                }
                             }
                         } else if (Math.abs(deltaX) < Math.abs(deltaY)) { //mvt v
                             if (deltaY < 0) {
                                 //Toast.makeText(mainGame.getApplicationContext(),"Go Down",Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, "Go Down");
-                                game.moveDown();
+                                if(game.canMoveDown()) {
+                                    Log.d(TAG, "Go Down");
+                                    boardView.getHowdyShadeView().animate()
+                                            .y((game.getHowdy().getY() - 5) * 40)
+                                            .setDuration(100)
+                                            .setListener(null);
+
+                                    boardView.getHowdyView().animate()
+                                            .y((game.getHowdy().getY() + 1) * 40)
+                                            .setDuration(100)
+                                            .setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    super.onAnimationEnd(animation);
+                                                    game.moveDown();
+                                                    endMovement(game, boardView);
+                                                }
+                                            });
+
+                                }
                             } else {
                                 //Toast.makeText(mainGame.getApplicationContext(),"Go Up",Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, "Go Up");
-                                game.moveUp();
+                                if (game.canMoveUp()) {
+                                    Log.d(TAG, "Go Up");
+                                    boardView.getHowdyShadeView().animate()
+                                            .y((game.getHowdy().getY() - 7) * 40)
+                                            .setDuration(100)
+                                            .setListener(null);
+
+                                    boardView.getHowdyView().animate()
+                                            .y((game.getHowdy().getY() - 1) * 40)
+                                            .setDuration(100)
+                                            .setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    super.onAnimationEnd(animation);
+                                                    game.moveUp();
+                                                    endMovement(game, boardView);
+                                                }
+                                            });
+                                }
                             }
                         }
 
-                        boardView.setGame(game);
-                        boardView.invalidate();
                     }
-                }
-                
-                movedBySwipe = false;
-
-                if (game.isLost()) {
-                    mainGame.loseGame();
-                }
-
-                if (game.isWon()) {
-                    Log.d(TAG, "Game won !");
-                    boardView.animate()
-                            .alpha(0f)
-                            .setDuration(1000)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    mainGame.winGame();
-                                    boardView.animate()
-                                            .alpha(1f)
-                                            .setDuration(1000)
-                                            .setListener(null);
-                                }
-                            });
                 }
 				break;
 		}
 
 		return true;
 	}
+
+    private void endMovement(final Game game, final GameBoard boardView){
+        boardView.setGame(game);
+        boardView.invalidate();
+        boardView.getGlowingBoard().invalidate();
+
+        movedBySwipe = false;
+
+        if (game.isLost()) {
+            Log.d(TAG, "Game lost !");
+
+            boardView.getHowdyView().animate()
+                        .scaleX(0)
+                        .scaleY(0)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mainGame.loseGame();
+                                boardView.getHowdyView().setScaleX(1);
+                                boardView.getHowdyView().setScaleY(1);
+                            }
+                    });
+        }
+
+        if (game.isWon()) {
+            Log.d(TAG, "Game won !");
+            boardView.animate()
+                    .alpha(0f)
+                    .setDuration(1000)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mainGame.winGame();
+                            boardView.animate()
+                                    .alpha(1f)
+                                    .setDuration(1000)
+                                    .setListener(null);
+                        }
+                    });
+
+            boardView.getGlowingBoard().animate()
+                    .alpha(0f)
+                    .setDuration(1000)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            boardView.getGlowingBoard().animate()
+                                    .alpha(1f)
+                                    .setDuration(1000)
+                                    .setListener(null);
+                        }
+                    });
+        }
+    }
 }

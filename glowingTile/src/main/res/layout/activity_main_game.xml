@@ -17,4 +17,21 @@
         android:layout_height="match_parent"
         android:id="@+id/gameBoard"
         android:layout_gravity="center" />
+
+    <com.linkedfluuuush.glowingtile.gui.HowdyShadeView
+        android:layout_width="520px"
+        android:layout_height="520px"
+        android:id="@+id/howdyShadeView"
+        android:layout_gravity="left|top" />
+
+    <com.linkedfluuuush.glowingtile.gui.GlowingBoard
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/glowingBoard"
+        android:layout_gravity="center" />
+
+    <com.linkedfluuuush.glowingtile.gui.HowdyView
+        android:layout_width="40px"
+        android:layout_height="40px"
+        android:id="@+id/howdyView" />
 </FrameLayout>

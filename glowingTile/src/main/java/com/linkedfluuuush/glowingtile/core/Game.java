@@ -122,6 +122,22 @@ public class Game {
         return false;
     }
 
+    public boolean canMoveUp(){
+        return this.getLabyrinth().existsTile(this.getHowdy().getX(), this.getHowdy().getY() - 1);
+    }
+
+    public boolean canMoveDown(){
+        return this.getLabyrinth().existsTile(this.getHowdy().getX(), this.getHowdy().getY() + 1);
+    }
+
+    public boolean canMoveLeft(){
+        return this.getLabyrinth().existsTile(this.getHowdy().getX() - 1, this.getHowdy().getY());
+    }
+
+    public boolean canMoveRight(){
+        return this.getLabyrinth().existsTile(this.getHowdy().getX() + 1, this.getHowdy().getY());
+    }
+
     public boolean isWon(){
         return this.getLabyrinth().detectWin(this.getHowdy());
     }
