@@ -76,7 +76,7 @@ public class MainGame extends Activity {
         String allDoneLevelsString = prefs.getString("doneLevels", null);
         
         if(allDoneLevelsString != null){
-            allDoneLevels = Arrays.asList(allDoneLevelsString.split(","));
+            allDoneLevels = new ArrayList<String>(Arrays.asList(allDoneLevelsString.split(",")));
         }
         
         ((GameBoard) findViewById(R.id.gameBoard)).setGame(this.game);

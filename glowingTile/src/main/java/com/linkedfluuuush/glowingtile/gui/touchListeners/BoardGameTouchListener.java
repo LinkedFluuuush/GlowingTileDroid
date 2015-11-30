@@ -242,9 +242,37 @@ public class BoardGameTouchListener implements OnTouchListener {
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                mainGame.loseGame();
-                                boardView.getHowdyView().setScaleX(1);
-                                boardView.getHowdyView().setScaleY(1);
+                                boardView.animate()
+                                    .alpha(0f)
+                                    .setDuration(300)
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            mainGame.loseGame();
+                                            boardView.animate()
+                                                .alpha(1f)
+                                                .setDuration(300)
+                                                .setListener(new AnimatorListenerAdapter(){
+                                                    @Override
+                                                    public void onAnimationEnd(Animator animation){
+                                                        boardView.getHowdyView().setScaleX(1);
+                                                        boardView.getHowdyView().setScaleY(1);
+                                                    }
+                                                });
+                                        }
+                                    });
+                                boardView.getGlowingBoard().animate()
+                                    .alpha(0f)
+                                    .setDuration(300)
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            boardView.getGlowingBoard().animate()
+                                                .alpha(1f)
+                                                .setDuration(300)
+                                                .setListener(null);
+                                        }
+                                    });
                             }
                     });
         }
