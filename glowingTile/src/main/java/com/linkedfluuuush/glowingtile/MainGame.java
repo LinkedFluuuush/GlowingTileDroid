@@ -5,6 +5,7 @@ import android.app.*;
 import android.content.*;
 import android.content.res.*;
 import android.os.*;
+import android.util.*;
 import android.view.*;
 import android.widget.*;
 import com.linkedfluuuush.glowingtile.core.*;
@@ -12,15 +13,15 @@ import com.linkedfluuuush.glowingtile.gui.*;
 import com.linkedfluuuush.glowingtile.gui.touchListeners.*;
 import java.io.*;
 import java.util.*;
-import android.util.*;
 
 
 public class MainGame extends Activity {
     private static final String TAG = MainGame.class.getName();
 
     private Game game;
-	private int level = 5;
+	private int level;
     private List<String> allDoneLevels;
+    private boolean waitForNext = false;
 
 	public Game getGame(){
 		return game;
@@ -61,7 +62,7 @@ public class MainGame extends Activity {
 		String mapJson = prefs.getString("map", null);
 		
 		if(mapJson == null){
-			this.nextLevel();
+            waitForNext=true;
 		} else {
 			this.game.initGame(mapJson);
 			String howdyPosition = prefs.getString("howdy", null);
@@ -78,13 +79,24 @@ public class MainGame extends Activity {
         if(allDoneLevelsString != null){
             allDoneLevels = new ArrayList<String>(Arrays.asList(allDoneLevelsString.split(",")));
         }
+
+		super.onStart();
+	}
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        // TODO: Implement this method
+        super.onWindowFocusChanged(hasFocus);
+        
+        if(waitForNext){
+            this.nextLevel();
+            waitForNext = false;
+        }
         
         ((GameBoard) findViewById(R.id.gameBoard)).setGame(this.game);
         findViewById(R.id.gameBoard).invalidate();
         ((GameBoard) findViewById(R.id.gameBoard)).getHowdyShadeView().invalidate();
-
-		super.onStart();
-	}
+    }
 
 	@Override
 	protected void onStop()
@@ -192,10 +204,10 @@ public class MainGame extends Activity {
 
                     game.initGame(levelJSON);
                 } catch (IOException e) {
-                    this.game.initGame(level, boardView.getWidth() / 60, boardView.getHeight() / 60);
+                    this.game.initGame(level, boardView.getMeasuredWidth() / 60, boardView.getMeasuredHeight() / 60);
                 }
             } else {
-                this.game.initGame(level, boardView.getWidth() / 60, boardView.getHeight() / 60);
+                this.game.initGame(level, boardView.getMeasuredWidth() / 60, boardView.getMeasuredHeight() / 60);
             }
         }
 
@@ -206,5 +218,7 @@ public class MainGame extends Activity {
         boardView.getHowdyShadeView().invalidate();
         
         Toast.makeText(this, this.level + "", Toast.LENGTH_SHORT).show();
+        
+        Log.i(TAG, "Max tiles : " + (boardView.getMeasuredWidth() / 60) * (boardView.getMeasuredHeight() / 60));
 	}
 }

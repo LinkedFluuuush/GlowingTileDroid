@@ -111,7 +111,7 @@ public class Labyrinth {
     }
 
     public static Labyrinth generateLabyrinth(int lvl, int maxWidth, int maxHeight) {
-        Log.d(TAG, "Generating Labyrinth with params lvl = " + lvl + ", maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
+        Log.d(TAG, "Generating Labyrinth with params lvl = " + lvl + ", maxWidth = " + maxWidth + ", maxHeight = " + maxHeight);
         if (maxHeight > 0 && maxWidth > 0) {
             Random r = new Random();
             Tile tileDepart = new Tile(r.nextInt(maxWidth), r.nextInt(maxHeight), Tile.Type.DEPART);
@@ -130,13 +130,13 @@ public class Labyrinth {
 
             return new Labyrinth(newTiles);
         } else {
-            Log.e(TAG, "Wrong params for generation ! maxWidth = " + maxWidth + ", mawHeight = " + maxHeight);
+            Log.e(TAG, "Wrong params for generation ! maxWidth = " + maxWidth + ", maxHeight = " + maxHeight);
             return null;
         }
     }
 
     private static LinkedList<Tile> generateStep(LinkedList<Tile> tiles, int lvl, int maxWidth, int maxHeight) {
-        if (tiles.size() >= 6 * lvl) {
+        if (tiles.size() >= Math.min(3 * lvl, maxWidth * maxHeight)) {
             return tiles;
         } else {
             Random r = new Random();
@@ -179,7 +179,7 @@ public class Labyrinth {
                         notValid = true;
                         stepDir = (stepDir % 4) + 1;
                     } else {
-                        if (tiles.size() >= 5 + (2 * lvl)) {
+                        if (tiles.size() >= Math.min(5 + (2 * lvl), (maxWidth * maxHeight) * 0.5)) {
                             return tiles;
                         } else {
                             return null;
@@ -194,7 +194,7 @@ public class Labyrinth {
                                 stepDir = (stepDir % 4) + 1;
                                 break;
                             } else {
-                                if (tiles.size() >= 5 + (2 * lvl)) {
+                                if (tiles.size() >= Math.min(5 + (2 * lvl), (maxWidth * maxHeight) * 0.5)) {
                                     return tiles;
                                 } else {
                                     return null;
@@ -219,7 +219,7 @@ public class Labyrinth {
                             notValid = true;
                             stepDir = (stepDir % 4) + 1;
                         } else {
-                            if (tiles.size() >= 5 + (2 * lvl)) {
+                            if (tiles.size() >= Math.min(5 + (2 * lvl), (maxWidth * maxHeight) * 0.5)) {
                                 return tiles;
                             } else {
                                 return null;

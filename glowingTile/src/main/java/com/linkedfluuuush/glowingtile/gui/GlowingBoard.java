@@ -64,7 +64,7 @@ public class GlowingBoard extends View{
                 switch (t.getType()) {
                     case DEPART:
                         mBoardPaint.setColor(Color.BLUE);
-                        fileName = "tile";
+                        fileName = "start";
                         break;
                     case ARRIVEE:
                         mBoardPaint.setColor(Color.YELLOW);
