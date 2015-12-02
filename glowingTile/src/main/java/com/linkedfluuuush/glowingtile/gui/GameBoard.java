@@ -75,7 +75,7 @@ public class GameBoard extends View {
 				switch (t.getType()) {
 					case DEPART:
 						mBoardPaint.setColor(Color.BLUE);
-						fileName = "tile";
+						fileName = "start";
 						break;
 					case ARRIVEE:
 						mBoardPaint.setColor(Color.YELLOW);
@@ -96,7 +96,7 @@ public class GameBoard extends View {
 						fileName += "";
 						break;
                     case USE:
-                        fileName += "";
+                        fileName = "";
                         break;
 					case CASSE:
 						fileName += "_glowing";

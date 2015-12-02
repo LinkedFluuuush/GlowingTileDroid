@@ -11,6 +11,7 @@ import com.linkedfluuuush.glowingtile.core.*;
 public class BoardGameTouchListener implements OnTouchListener {
 
 	private static final String TAG = BoardGameTouchListener.class.getName();
+    final OnTouchListener thisListener = this;
 
 	private MainGame mainGame;
 
@@ -28,39 +29,6 @@ public class BoardGameTouchListener implements OnTouchListener {
 		final GameBoard boardView = (GameBoard) view;
 		final Game game = mainGame.getGame();
 
-		/*MotionEvent.PointerCoords coords = new MotionEvent.PointerCoords();
-         event.getPointerCoords(0, coords);
-
-         float deltaX = Math.abs(event.getX() - (game.getHowdy().getX() * 40) + 10);
-         float deltaY = Math.abs(event.getY() - (game.getHowdy().getY() * 40) + 10);
-
-         Log.d(TAG, "Deltas : X = " + deltaX + " (" + event.getX() + "-" +
-         ((game.getHowdy().getX() * 40) + 10) + "), Y = " + deltaY +
-         " (" + event.getY() + "-" + ((game.getHowdy().getY() * 40) + 10) + ")");
-
-         if(deltaX > deltaY){ /* On considère que l'on a appuyé pour un mouvement horizontal (plus proche de l'axe horizontal de Howdy) */
-        /*if(event.getX() > (game.getHowdy().getX() * 40) + 10){
-         Log.d(TAG, "Moving right");
-         game.moveRight();
-         } else if(event.getX() < (game.getHowdy().getX() * 40) + 10) {
-         Log.d(TAG, "Moving left");
-         game.moveLeft();
-         }
-         } else if(deltaX < deltaY) { /* On considère que l'on a appuyé pour un mouvement vertical (plus proche de l'axe vertical de Howdy) */
-        /*if(event.getY() > (game.getHowdy().getY() * 40) + 10){
-         Log.d(TAG, "Moving down");
-         game.moveDown();
-         } else if(event.getY() < (game.getHowdy().getY() * 40) + 10) {
-         Log.d(TAG, "Moving up");
-         game.moveUp();
-         }
-         }
-
-         /* Dans le cas ou les deltas sont égaux, ou le cas ou le joueur appuie précisément sur Howdy, on ne fait rien par indécision. */
-
-		/*boardView.setGame(game);
-         boardView.invalidate();*/
-
         if (!movedBySwipe) {
             float x = event.getX();
             float y = event.getY();
@@ -71,32 +39,102 @@ public class BoardGameTouchListener implements OnTouchListener {
             if (x >= game.getHowdy().getX() * 40 && x <= (game.getHowdy().getX() + 1) * 40) {
                 Log.d(TAG, "Same row");
                 if (y <= game.getHowdy().getY() * 40 && y >= (game.getHowdy().getY() - 1) * 40) {
-                    Log.d(TAG, "Go Up");
-                    game.moveUp();
-                    boardView.setGame(game);
-                    boardView.invalidate();
+                    if (game.canMoveUp()) {
+                        Log.d(TAG, "Go Up");
+                        boardView.setOnTouchListener(null);
+                        boardView.getHowdyShadeView().animate()
+                            .y((game.getHowdy().getY() - 7) * 40)
+                            .setDuration(100)
+                            .setListener(null);
+
+                        boardView.getHowdyView().animate()
+                            .y((game.getHowdy().getY() - 1) * 40)
+                            .setDuration(100)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    game.moveUp();
+                                    endMovement(game, boardView);
+                                    boardView.setOnTouchListener(thisListener);
+                                }
+                            });
+                    }
                     movedByProxi = true;
                 } else if (y <= (game.getHowdy().getY() + 2) * 40 && y >= (game.getHowdy().getY() + 1) * 40) {
-                    Log.d(TAG, "Go Down");
-                    game.moveDown();
-                    boardView.setGame(game);
-                    boardView.invalidate();
+                    if(game.canMoveDown()) {
+                        Log.d(TAG, "Go Down");
+                        boardView.setOnTouchListener(null);
+                        boardView.getHowdyShadeView().animate()
+                            .y((game.getHowdy().getY() - 5) * 40)
+                            .setDuration(100)
+                            .setListener(null);
+
+                        boardView.getHowdyView().animate()
+                            .y((game.getHowdy().getY() + 1) * 40)
+                            .setDuration(100)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    game.moveDown();
+                                    endMovement(game, boardView);
+                                    boardView.setOnTouchListener(thisListener);
+                                }
+                            });
+
+                    }
                     movedByProxi = true;
                 }
             } else {
                 if (y >= game.getHowdy().getY() * 40 && y <= (game.getHowdy().getY() + 1) * 40) {
                     Log.d(TAG, "Same column");
                     if (x <= game.getHowdy().getX() * 40 && x >= (game.getHowdy().getX() - 1) * 40) {
-                        Log.d(TAG, "Go Left");
-                        game.moveLeft();
-                        boardView.setGame(game);
-                        boardView.invalidate();
+                        if(game.canMoveLeft()) {
+                            Log.d(TAG, "Go Left");
+                            boardView.setOnTouchListener(null);
+                            boardView.getHowdyShadeView().animate()
+                                .x((game.getHowdy().getX() - 7) * 40)
+                                .setDuration(100)
+                                .setListener(null);
+
+                            boardView.getHowdyView().animate()
+                                .x((game.getHowdy().getX()  - 1) * 40)
+                                .setDuration(100)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        game.moveLeft();
+                                        endMovement(game, boardView);
+                                        boardView.setOnTouchListener(thisListener);
+                                    }
+                                });
+
+                        }
                         movedByProxi = true;
                     } else if (x <= (game.getHowdy().getX() + 2) * 40 && x >= (game.getHowdy().getX() + 1) * 40) {
-                        Log.d(TAG, "Go Right");
-                        game.moveRight();
-                        boardView.setGame(game);
-                        boardView.invalidate();
+                        if(game.canMoveRight()) {
+                            Log.d(TAG, "Go Right");
+                            boardView.setOnTouchListener(null);
+                            boardView.getHowdyShadeView().animate()
+                                .x((game.getHowdy().getX() - 5) * 40)
+                                .setDuration(100)
+                                .setListener(null);
+
+                            boardView.getHowdyView().animate()
+                                .x((game.getHowdy().getX() + 1) * 40)
+                                .setDuration(100)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        game.moveRight();
+                                        endMovement(game, boardView);
+                                        boardView.setOnTouchListener(thisListener);
+                                    }
+                                });
+                        }
                         movedByProxi = true;
                     }
                 }
@@ -234,6 +272,8 @@ public class BoardGameTouchListener implements OnTouchListener {
 
         if (game.isLost()) {
             Log.d(TAG, "Game lost !");
+            
+            boardView.setOnTouchListener(null);
 
             boardView.getHowdyView().animate()
                         .scaleX(0)
@@ -257,6 +297,7 @@ public class BoardGameTouchListener implements OnTouchListener {
                                                     public void onAnimationEnd(Animator animation){
                                                         boardView.getHowdyView().setScaleX(1);
                                                         boardView.getHowdyView().setScaleY(1);
+                                                        boardView.setOnTouchListener(thisListener);
                                                     }
                                                 });
                                         }
@@ -279,6 +320,7 @@ public class BoardGameTouchListener implements OnTouchListener {
 
         if (game.isWon()) {
             Log.d(TAG, "Game won !");
+            boardView.setOnTouchListener(null);
             boardView.animate()
                     .alpha(0f)
                     .setDuration(1000)
@@ -289,7 +331,12 @@ public class BoardGameTouchListener implements OnTouchListener {
                             boardView.animate()
                                     .alpha(1f)
                                     .setDuration(1000)
-                                    .setListener(null);
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation){
+                                            boardView.setOnTouchListener(thisListener);
+                                        }
+                                    });
                         }
                     });
 
