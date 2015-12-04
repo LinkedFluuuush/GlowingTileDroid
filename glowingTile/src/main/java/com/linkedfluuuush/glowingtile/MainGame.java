@@ -56,7 +56,8 @@ public class MainGame extends Activity {
 	@Override
 	protected void onStart()
 	{
-		SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+        final GameBoard boardView = (GameBoard) this.findViewById(R.id.gameBoard);
+        SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
 		
 		this.level = prefs.getInt("level", 0);
 		String mapJson = prefs.getString("map", null);
@@ -164,7 +165,7 @@ public class MainGame extends Activity {
 
                     br.close();
 
-                    game.initGame(levelJSON);
+                    game.initGame(levelJSON, boardView.getMeasuredWidth() / 60, boardView.getMeasuredHeight() / 60);
                     loaded = true;
                 }
             }
@@ -202,7 +203,7 @@ public class MainGame extends Activity {
 
                     allDoneLevels.add(name);
 
-                    game.initGame(levelJSON);
+                    game.initGame(levelJSON, boardView.getMeasuredWidth() / 60, boardView.getMeasuredHeight() / 60);
                 } catch (IOException e) {
                     this.game.initGame(level, boardView.getMeasuredWidth() / 60, boardView.getMeasuredHeight() / 60);
                 }

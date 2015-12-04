@@ -62,6 +62,26 @@ public class Game {
         return this;
     }
 
+    public Game initGame(String mapJSONSource, int maxWidth, int maxHeight){
+        try {
+            //Log.d(TAG, "Loading labyrinth " + lvlName + "...");
+            this.setLabyrinth(Labyrinth.loadLabyrinth(mapJSONSource, maxWidth, maxHeight));
+            this.setHowdy(Howdy.getHowdy());
+
+            Log.d(TAG, "Setting Howdy");
+            for(Tile t : this.getLabyrinth().getTiles()){
+                if(t.getType().equals(Tile.Type.DEPART)){
+                    this.getHowdy().setPosition(t.getX(), t.getY());
+                }
+            }
+            Log.d(TAG, "Howdy set to (" + this.getHowdy().getX() + ", " + this.getHowdy().getY() + ")");
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return this;
+    }
+
     public Game initGame(String mapJSONSource){
         try {
             //Log.d(TAG, "Loading labyrinth " + lvlName + "...");
@@ -81,6 +101,7 @@ public class Game {
 
         return this;
     }
+
 
     public boolean moveUp(){
         if(this.getLabyrinth().existsTile(this.getHowdy().getX(), this.getHowdy().getY() - 1)) {

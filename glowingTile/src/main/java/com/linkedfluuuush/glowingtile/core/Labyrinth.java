@@ -269,6 +269,38 @@ public class Labyrinth {
         return false;
     }
 
+    public static Labyrinth loadLabyrinth(String mapJSONSource, int maxWidth, int maxHeight) throws IOException, JSONException {
+        LinkedList<Tile> tiles = new LinkedList<>();
+        int maxX = 0, maxY = 0, deltaX, deltaY;
+        Random r = new Random();
+
+        JSONArray tileArray = new JSONArray(mapJSONSource);
+
+        for (int i = 0 ; i < tileArray.length() ; i++) {
+            if(tileArray.getJSONObject(i).getInt("x") > maxX){
+                maxX = tileArray.getJSONObject(i).getInt("x");
+            }
+
+            if(tileArray.getJSONObject(i).getInt("y") > maxY){
+                maxY = tileArray.getJSONObject(i).getInt("y");
+            }
+
+            tiles.add(new Tile(tileArray.getJSONObject(i).getInt("x"),
+                               tileArray.getJSONObject(i).getInt("y"),
+                               tileArray.getJSONObject(i).getString("t")));
+        }
+
+        deltaX = r.nextInt(maxWidth - maxX);
+        deltaY = r.nextInt(maxHeight - maxY);
+
+        for(Tile t : tiles){
+            t.setX(t.getX() + deltaX);
+            t.setY(t.getY() + deltaY);
+        }
+
+        return new Labyrinth(tiles);
+    }
+
     public static Labyrinth loadLabyrinth(String mapJSONSource) throws IOException, JSONException {
         LinkedList<Tile> tiles = new LinkedList<>();
 
@@ -276,8 +308,8 @@ public class Labyrinth {
 
         for (int i = 0 ; i < tileArray.length() ; i++) {
             tiles.add(new Tile(tileArray.getJSONObject(i).getInt("x"),
-                               tileArray.getJSONObject(i).getInt("y"),
-                               tileArray.getJSONObject(i).getString("t")));
+                    tileArray.getJSONObject(i).getInt("y"),
+                    tileArray.getJSONObject(i).getString("t")));
         }
 
         return new Labyrinth(tiles);
