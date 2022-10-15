@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GlowingTileDroid.iml" filepath="$PROJECT_DIR$/GlowingTileDroid.iml" />
-      <module fileurl="file://$PROJECT_DIR$/glowingTile/glowingTile.iml" filepath="$PROJECT_DIR$/glowingTile/glowingTile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GlowingTileDroid.iml" filepath="$PROJECT_DIR$/.idea/modules/GlowingTileDroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.iml" filepath="$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.main.iml" filepath="$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/glowingTile/GlowingTileDroid.glowingTile.unitTest.iml" />
     </modules>
   </component>
 </project>
