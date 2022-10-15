@@ -23,7 +23,7 @@ public class MainGame extends Activity {
     private List<String> allDoneLevels;
     private boolean waitForNext = false;
 
-	public Game getGame(){
+    public Game getGame(){
 		return game;
 	}
 
@@ -146,11 +146,9 @@ public class MainGame extends Activity {
 
         try {
             List<String> allTutoLevels = new LinkedList<String>(Arrays.asList(am.list("levels/tutorial")));
-            
-            //if(addMsg){
-            //    allTutoLevels.addAll(Arrays.asList(am.list("msg")));
-            //}
-            
+
+//            allTutoLevels.addAll(Arrays.asList(am.list("msg")));
+
             Log.d(TAG, allTutoLevels.toString());
 
             for(String name : allTutoLevels){
